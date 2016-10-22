@@ -4,6 +4,7 @@
 <head>
     <link href="{% static 'sales/stylesheet.css' %}" rel="stylesheet" type="text/css">
     <script src="{% static 'sales/script.js' %}" type="text/javascript"></script>
+
 </head>
 <body>
   <div class="container">
@@ -12,12 +13,12 @@
       <h3>Step2: Amount of Sold Tickets</h3><br>
       <fieldset>
 
-              <select name="select0" onchange="changeFunc(value, this.id);">
-            	   <option value="1">1 Ticket $2</option>
-            	    <option value="2">3 Ticket Pack $3</option>
-            	     <option value="3">10 Ticket Pack $8</option>
+              <select name="selector0" id="row0" onchange="changeFunc(value, this.id);">
+            	   <option value="1">1 Ticket ${{ price1 }}</option>
+            	   <option value="2">3 Ticket Pack ${{ price3 }}</option>
+            	   <option value="3">10 Ticket Pack ${{ price10 }}</option>
               </select>
-            <input name="ticket0" placeholder="Ticket Number" type="text" >
+            <input name="ticket0.0" placeholder="Ticket Number" type="text" >
           <div id="contentrow0"></div>
       </fieldset>
       <div id="more"></div>

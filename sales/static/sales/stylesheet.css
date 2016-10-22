@@ -12,6 +12,9 @@
   text-rendering: optimizeLegibility;
 }
 
+span {
+    color: red;
+}
 
 body {
   font-family: "Roboto", Helvetica, Arial, sans-serif;

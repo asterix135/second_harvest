@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+    <link href="{% static 'sales/stylesheet.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <div class="container">
+    <form id="contact" action="" method="post">
+      <h1>Welcome {{ seller_name }} to Charity Raffle Volunteer Dashboard</h1><br>
+      <h4>You've sold <span>[sum of ticket_id where seller_id=?]</span> Tickets!</h4>
+      <h4>You have raised <span>[Amount of money the seller raised]</span>! </h4>
+      <h4>This Campaign funding goal is <span>[select campaign goal]</span>.</h4><br>
+      <div style="text-align:center;"><img border="0" src="http://www.coolfundraisingideas.net/thermometer/thermometer.php?currency=dollar&goal=10000&current=2555&color=green&size=large"></div>
+      <fieldset>
+          <button class="submit" >Sell Ticket</button>
+      </fieldset>
+    </form>
+</div>
+</body>
+</html>

@@ -11,3 +11,5 @@ PROVINCES = (('AB', 'Alberta'),
              ('NT', 'Northwest Territories'),
              ('NU', 'Nunuavut'),
              ('YT', 'Yukon'))
+
+DEFAULT_PRICES = {'price1': 500, 'price3': 3, 'price10': 8}
