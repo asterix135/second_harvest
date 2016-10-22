@@ -1,4 +1,5 @@
 from django.db import models
+from .constants import *
 
 # Create your models here.
 class Campaign(models.Model):
@@ -13,7 +14,6 @@ class Campaign(models.Model):
 
 
 class Seller(models.Model):
-    seller_id = models.IntegerField()
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
@@ -21,7 +21,6 @@ class Seller(models.Model):
 
 
 class Buyer(models.Model):
-    buyer_id = models.IntegerField()
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
@@ -29,7 +28,7 @@ class Buyer(models.Model):
     opt_out = models.BooleanField(default=False)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=50)
-    province = models.CharField(max_length=2)
+    province = models.CharField(max_length=2, choices=PROVINCES, default="ON")
     postal_code = models.CharField(max_length=6)
 
 
