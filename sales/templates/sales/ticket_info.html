@@ -8,15 +8,16 @@
 <body>
   <div class="container">
     <form id="contact" action="" method="post">
+      {% csrf_token %}
       <h3>Step2: Amount of Sold Tickets</h3><br>
       <fieldset>
 
-              <select id="row0" onchange="changeFunc(value, this.id);">
+              <select name="select0" onchange="changeFunc(value, this.id);">
             	   <option value="1">1 Ticket $2</option>
             	    <option value="2">3 Ticket Pack $3</option>
             	     <option value="3">10 Ticket Pack $8</option>
               </select>
-            <input placeholder="Ticket Number" type="text" >
+            <input name="ticket0" placeholder="Ticket Number" type="text" >
           <div id="contentrow0"></div>
       </fieldset>
       <div id="more"></div>
@@ -27,6 +28,7 @@
         <button type="submit" class="submit" >Submit</button>
       </fieldset>
     </form>
+    <p id="total"></p>
   </div>
 
 </body>
