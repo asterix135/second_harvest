@@ -11,6 +11,7 @@ def index(request):
 
 
 def ticket_info(request):
+    print(request.session['buyer'])
     return render(request, 'sales/ticket_info.html')
 
 
@@ -29,7 +30,8 @@ def client_info(request):
                 opt_out=True if 'opt_out' in request.POST else False,
             )
             buyer.save()
-        return redirect(reverse('sales:ticket_info'))
+            request.session['buyer'] = buyer.id
+        return HttpResponseRedirect(reverse('sales:ticket_info'))
     context = {
         'buyer_form': DonorInputForm
     }
