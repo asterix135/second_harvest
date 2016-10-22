@@ -3,8 +3,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+import datetime
 
 from .forms import *
+from .models import *
 from .constants import DEFAULT_PRICES
 
 # Create your views here.
@@ -44,6 +46,8 @@ def ticket_info(request):
         tickets = {}
         for key in request.POST:
             if key[:8] == 'selector':
+                print('\n\n')
+                print(request.POST[key])
                 ticket_prices[key[8:]] = request.POST[key]
             elif key[:6] == 'ticket':
                 tickets[key[6:]] = request.POST[key]
@@ -53,10 +57,10 @@ def ticket_info(request):
             if not ticket_is_new(tickets[key]):
                 # raise error and return to ticket info page
                 pass
-            price_lookup = key[:len(key)-1]
+            price_lookup = ticket_prices[key[:len(key)-2]]
             if str(price_lookup) in ['1', '2']:
-                new_tickets.append(Ticket(
-                    tick_id = tickets[key],
+                new_tickets.append(Tickets(
+                    tick_id = str(tickets[key]),
                     sale_date = timezone.now(),
                     tick_type = price_lookup,
                     buyer_id = Buyer.objects.get(pk=request.session['buyer']),
@@ -67,8 +71,8 @@ def ticket_info(request):
                     else prices['price3'] / 3
             else:
                 for i in range(10):
-                    new_tickets.append(Ticket(
-                        tick_id = int(tickets[key] + i),
+                    new_tickets.append(Tickets(
+                        tick_id = str(int(tickets[key]) + i),
                         sale_date = timezone.now(),
                         tick_type = price_lookup,
                         buyer_id = Buyer.objects.get(pk=request.session['buyer']),
@@ -78,6 +82,8 @@ def ticket_info(request):
                 total_price += prices['price10']
         for ticket in new_tickets:
             ticket.save()
+        request.session['total_price'] = str(total_price)
+        return HttpResponseRedirect(reverse('sales:thankyou'))
 
     context = {'price1': prices['price1'],
                'price3': prices['price3'],
@@ -108,8 +114,24 @@ def client_info(request):
     return render(request, 'sales/client_info.html', context)
 
 
-def thank_you(request):
-    return render(request, 'sales/thank_you.html')
+def thankyou(request):
+    if request.method == 'POST':
+        del request.session['buyer']
+        del request.session['total_price']
+        return HttpResponseRedirect(reverse('sales:welcome'))
+    context = {
+        'ticket_cost': request.session['total_price']
+    }
+    return render(request, 'sales/thankyou.html', context)
+
+#
+# def total(data_file):
+#     total_raised=0
+#     with open(data_file, 'r') as data:
+#         for i in data.readlines():
+#             total_raised += float(i[:-2])
+#     return total_raised
+
 
 def welcome(request):
     ##########
@@ -124,7 +146,10 @@ def welcome(request):
     #############
     # end delete section
     #############
+    total_raised = '9000'
+    therm_url = 'http://www.coolfundraisingideas.net/thermometer/thermometer.php?currency=dollar&goal=10000&current='+total_raised+'&color=green&size=large'
     context = {
-        'seller_name': "Mary Smith"
+        'seller_name': "Mary Smith",
+        'image_src': therm_url
     }
     return render(request, 'sales/welcome.html', context)
