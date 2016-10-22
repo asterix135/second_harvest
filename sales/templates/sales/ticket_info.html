@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
 <head>
-<script src="script.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link href="{% static 'sales/stylesheet.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'sales/script.js' %}" type="text/javascript"></script>
 </head>
 <body>
   <div class="container">

@@ -11,7 +11,8 @@ def index(request):
 
 
 def ticket_info(request):
-    print(request.session['buyer'])
+    if request.method == 'POST':
+        pass
     return render(request, 'sales/ticket_info.html')
 
 
