@@ -80,7 +80,8 @@ DATABASES = {
         'NAME': 'asterix135$second_harvest',
         'USER': 'asterix135',
         'PASSWORD': 'second_harvest',
-        'HOST': 'asterix135.mysql.pythonanywhere-services.com'
+        'HOST': 'asterix135.mysql.pythonanywhere-services.com',
+        'PORT': ''
     }
 }
 # DATABASES = {
