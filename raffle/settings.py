@@ -77,13 +77,21 @@ WSGI_APPLICATION = 'raffle.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'second_harvest',
-        'USER': 'second_harvest',
-        'PASSWORD': 'raffle',
-        'HOST': 'localhost'
+        'NAME': 'asterix135.mysql.pythonanywhere-services.com',
+        'USER': 'asterix135',
+        'PASSWORD': 'second_harvest',
+        'HOST': 'asterix135.mysql.pythonanywhere-services.com'
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'second_harvest',
+#         'USER': 'second_harvest',
+#         'PASSWORD': 'raffle',
+#         'HOST': 'localhost'
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
