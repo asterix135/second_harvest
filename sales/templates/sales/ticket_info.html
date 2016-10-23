@@ -5,6 +5,9 @@
     <form id="contact" action="" method="post">
       {% csrf_token %}
       <h3>Step2: Amount of Sold Tickets</h3><br>
+      {% if multi_key_error %}
+      <h5><span>{{ multi_key_error }}</span></h5>
+      {% endif %}
       <fieldset>
 
               <select name="selector0" id="row0" onchange="changeFunc(value, this.id);">
@@ -12,7 +15,7 @@
             	   <option value="2">3 Ticket Pack ${{ price3 }}</option>
             	   <option value="3">10 Ticket Pack ${{ price10 }}</option>
               </select>
-            <input name="ticket0.0" placeholder="Ticket Number" type="number" max="99999" >
+            <input name="ticket0.0" placeholder="Ticket Number" type="number" max="99999" min="0">
           <div id="contentrow0"></div>
       </fieldset>
       <div id="more"></div>

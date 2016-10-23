@@ -42,6 +42,7 @@ def logout_site(request):
 ##################
 def ticket_is_new(ticket_number):
     if Tickets.objects.filter(tick_id=ticket_number).exists():
+        print('\n\n\nOMG!!!!\n\n')
         return False
     else:
         return True
@@ -65,7 +66,9 @@ def ticket_info(request):
         'price3': curr_campaign.tick_price3,
         'price10': curr_campaign.tick_price10
     }
-
+    context = {'price1': prices['price1'],
+               'price3': prices['price3'],
+               'price10': prices['price10']}
     if request.method == 'POST':
         ticket_prices = {}
         tickets = {}
@@ -79,7 +82,10 @@ def ticket_info(request):
         for key in tickets:
             if not ticket_is_new(tickets[key]):
                 # raise error and return to ticket info page
-                pass
+                context['multi_key_error'] = "Ticket number " + \
+                    str(tickets[key]) + \
+                    ' has already been sold.  Please check your entry.'
+                return render(request, 'sales/ticket_info.html', context)
             price_lookup = ticket_prices[key[:len(key)-2]]
             if str(price_lookup) in ['1', '2']:
                 new_tickets.append(Tickets(
@@ -108,9 +114,6 @@ def ticket_info(request):
         request.session['total_price'] = str(total_price)
         return HttpResponseRedirect(reverse('sales:thankyou'))
 
-    context = {'price1': prices['price1'],
-               'price3': prices['price3'],
-               'price10': prices['price10']}
     return render(request, 'sales/ticket_info.html', context)
 
 
@@ -146,14 +149,6 @@ def thankyou(request):
         'ticket_cost': request.session['total_price']
     }
     return render(request, 'sales/thankyou.html', context)
-
-#
-# def total(data_file):
-#     total_raised=0
-#     with open(data_file, 'r') as data:
-#         for i in data.readlines():
-#             total_raised += float(i[:-2])
-#     return total_raised
 
 
 def welcome(request):
