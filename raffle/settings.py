@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'raffle.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'asterix135.mysql.pythonanywhere-services.com',
+        'NAME': 'asterix135$second_harvest',
         'USER': 'asterix135',
         'PASSWORD': 'second_harvest',
         'HOST': 'asterix135.mysql.pythonanywhere-services.com'
