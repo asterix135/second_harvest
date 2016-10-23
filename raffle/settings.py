@@ -135,4 +135,3 @@ USE_TZ = True
 
 # STATIC_URL = '/static/'
 STATIC_ROOT = '/home/asterix135/second_harvest/static'
-STATIC_URL = '/home/asterix135/second_harvest/static/'
