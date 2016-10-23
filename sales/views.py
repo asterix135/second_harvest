@@ -37,6 +37,11 @@ def logout_site(request):
     return HttpResponseRedirect(reverse('sales:login_site'))
 
 
+def require_login(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('sales:login_site'))
+
+
 ##################
 # helper fn
 ##################
@@ -47,6 +52,7 @@ def ticket_is_new(ticket_number):
         return True
 
 def ticket_info(request):
+    require_login(request)
     ##########
     # Delete when code is complete
     ##########
@@ -117,6 +123,7 @@ def ticket_info(request):
 
 
 def check_email(request):
+    require_login(request)
     if request.method == 'POST':
         form = EmailCheckForm(request.POST)
         if form.is_valid():
@@ -133,6 +140,7 @@ def check_email(request):
 
 
 def client_info(request):
+    require_login(request)
     if request.method == 'POST':
         form = DonorInputForm(request.POST)
         if form.is_valid():
@@ -168,6 +176,7 @@ def client_info(request):
 
 
 def thankyou(request):
+    require_login(request)
     if request.method == 'POST':
         del request.session['buyer']
         del request.session['total_price']
@@ -179,7 +188,7 @@ def thankyou(request):
 
 
 def welcome(request):
-
+    require_login(request)
     ##########
     # Delete when code is complete
     ##########
