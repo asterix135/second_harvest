@@ -5,10 +5,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 
 from .forms import *
 from .models import *
-from django.contrib.auth.models import User
 from .constants import DEFAULT_PRICES
 
 
@@ -45,11 +45,11 @@ def require_login(request):
 ##################
 # helper fn
 ##################
-def ticket_is_new(ticket_number):
+def ticket_is_already_sold(ticket_number):
     if Tickets.objects.filter(tick_id=ticket_number).exists():
-        return False
-    else:
         return True
+    else:
+        return False
 
 def ticket_info(request):
     require_login(request)
@@ -84,13 +84,12 @@ def ticket_info(request):
                 tickets[key[6:]] = request.POST[key]
         new_tickets = []
         total_price = 0
+        repeated_ticket_numbers = []
         for key in tickets:
-            if not ticket_is_new(tickets[key]):
-                # raise error and return to ticket info page
-                context['multi_key_error'] = "Ticket number " + \
-                    str(tickets[key]) + \
-                    ' has already been sold.  Please check your entry.'
-                return render(request, 'sales/ticket_info.html', context)
+            if ticket_is_already_sold(tickets[key]):
+                # add erroneous ticket to list of bad numbers
+                repeated_ticket_numbers.append(tickets[key])
+
             price_lookup = ticket_prices[key[:len(key)-2]]
             if str(price_lookup) in ['1', '2']:
                 new_tickets.append(Tickets(
@@ -114,6 +113,16 @@ def ticket_info(request):
                         camp_id = Campaign.objects.get(pk=request.session['campaign'])
                     ))
                 total_price += prices['price10']
+        # Fail if user enters previously sold tickets
+        if len(repeated_ticket_numbers) > 0:
+            bad_tix = ' '.join(x for x in repeated_ticket_numbers)
+            error_message = "The following tickets have already been sold. " + \
+                            ', '.join(x for x in repeated_ticket_numbers) + \
+                            "\nPlease check your entry"
+            context['multi_key_error'] = error_message
+            return render(request, 'sales/ticket_info.html', context)
+
+        # Else, tickets are good so commit to d/b
         for ticket in new_tickets:
             ticket.save()
         request.session['total_price'] = str(total_price)
