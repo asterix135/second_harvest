@@ -21,3 +21,8 @@ class DonorInputForm(forms.ModelForm):
                   'postal_code',
                   'opt_out',
 )
+
+class EmailCheckForm(forms.ModelForm):
+    class Meta:
+        model = Buyer
+        fields = ('email',)

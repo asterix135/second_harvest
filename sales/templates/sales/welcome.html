@@ -1,22 +1,18 @@
-<!DOCTYPE html>
-<html>
-{% load staticfiles %}
-<head>
-    <link href="{% static 'sales/stylesheet.css' %}" rel="stylesheet" type="text/css">
-</head>
-<body>
+{% extends 'sales/base.html' %}
+
+{% block content %}
   <div class="container">
     <form id="contact" action="" method="post">
     {% csrf_token %}
       <h1>Welcome {{ seller_name }} to Charity Raffle Volunteer Dashboard</h1><br>
-      <h4>You've sold <span>[sum of ticket_id where seller_id=?]</span> Tickets!</h4>
-      <h4>You have raised <span>[Amount of money the seller raised]</span>! </h4>
-      <h4>This Campaign funding goal is <span>[select campaign goal]</span>.</h4><br>
+      <h4>You've sold <span>{{ tickets_sold }}</span> Tickets!</h4>
+      <h4>You have raised <span>${{ money_sold }}</span>! </h4>
+      <h4>This Campaign funding goal is <span>${{ campaign_goal }}</span>.</h4><br>
       <div style="text-align:center;"><img border="0" src="{{ image_src }}"></div>
       <fieldset>
           <button class="submit" >Sell Ticket</button>
       </fieldset>
     </form>
 </div>
-</body>
-</html>
+
+{% endblock %}

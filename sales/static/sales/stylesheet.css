@@ -32,10 +32,7 @@ body {
   position: relative;
 }
 
-#contact input[type="text"],
-#contact input[type="email"],
-#contact input[type="tel"],
-#contact input[type="url"],
+#contact input,
 #contact textarea,
 #contact select,
 #contact button[type="submit"] {
@@ -68,10 +65,7 @@ fieldset {
   width: 100%;
 }
 
-#contact input[type="text"],
-#contact input[type="email"],
-#contact input[type="tel"],
-#contact input[type="url"],
+#contact input,
 #contact select,
 #contact textarea {
   width: 100%;
@@ -81,10 +75,7 @@ fieldset {
   padding: 10px;
 }
 
-#contact input[type="text"]:hover,
-#contact input[type="email"]:hover,
-#contact input[type="tel"]:hover,
-#contact input[type="url"]:hover,
+#contact input:hover,
 #contact select:hover,
 #contact textarea:hover {
   -webkit-transition: border-color 0.3s ease-in-out;

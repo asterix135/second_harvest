@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from .constants import *
 
 # Create your models here.
@@ -14,9 +15,7 @@ class Campaign(models.Model):
 
 
 class Seller(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField()
+    user = models.OneToOneField(User, primary_key=True)
     phone = models.CharField(max_length=20)
 
 
@@ -36,6 +35,6 @@ class Tickets(models.Model):
     tick_id = models.CharField(max_length=8)
     camp_id = models.ForeignKey('Campaign', on_delete=models.CASCADE)
     buyer_id = models.ForeignKey('Buyer')
-    seller_id = models.ForeignKey('Seller')
+    seller_id = models.ForeignKey(User)
     sale_date = models.DateField(blank=True)
     tick_type = models.SmallIntegerField(blank=True)

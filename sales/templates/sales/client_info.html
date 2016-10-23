@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-{% load staticfiles %}
-<html>
-<head>
-    <link href="{% static 'sales/stylesheet.css' %}" rel="stylesheet" type="text/css">
-</head>
+{% extends 'sales/base.html' %}
 
-<body>
-    <div class="container">
+{% block content %}
+<div class="container">
     <form id="contact" action="" method="post">
         {% csrf_token %}
         <h3>Step1: Ticket Information Form</h3><br>
         {{ buyer_form }}
         <button class="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
     </form>
+</div>
+
+{% endblock %}

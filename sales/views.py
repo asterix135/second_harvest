@@ -2,24 +2,49 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-import datetime
+from django.contrib.auth import authenticate, login, logout
 
 from .forms import *
 from .models import *
+from django.contrib.auth.models import User
 from .constants import DEFAULT_PRICES
 
-# Create your views here.
-def index(request):
-    request.session['campaign'] = 1
-    return render(request, 'sales/index.html')
+
+def login_site(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                request.session['seller'] = request.user.id
+                #######
+                # Need to Update this
+                #######
+                request.session['campaign'] = 1
+
+                return HttpResponseRedirect(reverse('sales:welcome'))
+    return render(request, 'sales/login.html')
+
+
+def logout_site(request):
+    del request.session['seller']
+    del request.session['campaign']
+    logout(request)
+    return HttpResponseRedirect(reverse('sales:login_site'))
 
 
 ##################
 # helper fn
 ##################
 def ticket_is_new(ticket_number):
-    return True
+    if Tickets.objects.filter(tick_id=ticket_number).exists():
+        return False
+    else:
+        return True
 
 def ticket_info(request):
     ##########
@@ -46,8 +71,6 @@ def ticket_info(request):
         tickets = {}
         for key in request.POST:
             if key[:8] == 'selector':
-                print('\n\n')
-                print(request.POST[key])
                 ticket_prices[key[8:]] = request.POST[key]
             elif key[:6] == 'ticket':
                 tickets[key[6:]] = request.POST[key]
@@ -64,7 +87,7 @@ def ticket_info(request):
                     sale_date = timezone.now(),
                     tick_type = price_lookup,
                     buyer_id = Buyer.objects.get(pk=request.session['buyer']),
-                    seller_id = Seller.objects.get(pk=request.session['seller']),
+                    seller_id = request.user,
                     camp_id = Campaign.objects.get(pk=request.session['campaign'])
                 ))
                 total_price += prices['price1'] if str(price_lookup) == '1' \
@@ -76,7 +99,7 @@ def ticket_info(request):
                         sale_date = timezone.now(),
                         tick_type = price_lookup,
                         buyer_id = Buyer.objects.get(pk=request.session['buyer']),
-                        seller_id = Seller.objects.get(pk=request.session['seller']),
+                        seller_id = request.user,
                         camp_id = Campaign.objects.get(pk=request.session['campaign'])
                     ))
                 total_price += prices['price10']
@@ -134,6 +157,7 @@ def thankyou(request):
 
 
 def welcome(request):
+
     ##########
     # Delete when code is complete
     ##########
@@ -146,10 +170,52 @@ def welcome(request):
     #############
     # end delete section
     #############
-    total_raised = '9000'
-    therm_url = 'http://www.coolfundraisingideas.net/thermometer/thermometer.php?currency=dollar&goal=10000&current='+total_raised+'&color=green&size=large'
+
+    if request.method == 'POST':
+        return HttpResponseRedirect(reverse('sales:client_info'))
+    seller = User.objects.get(pk=request.session['seller'])
+    tickets_sold = Tickets.objects.filter(seller_id_id=request.session['seller']).count()
+
+    money_sold_singles = Tickets.objects.filter(
+        seller_id_id=request.session['seller'],
+        tick_type=1,
+        camp_id_id=request.session['campaign']
+    ).count() * Campaign.objects.get(pk=request.session['campaign']).tick_price1
+    money_sold_triples = Tickets.objects.filter(
+        seller_id_id=request.session['seller'],
+        tick_type=2,
+        camp_id_id=request.session['campaign']
+    ).count() * Campaign.objects.get(pk=request.session['campaign']).tick_price3 / 3
+    money_sold_tens = Tickets.objects.filter(
+        seller_id_id=request.session['seller'],
+        tick_type=3,
+        camp_id_id=request.session['campaign']
+    ).count() * Campaign.objects.get(pk=request.session['campaign']).tick_price10 / 10
+
+    total_sold_singles = Tickets.objects.filter(
+        tick_type=1,
+        camp_id_id=request.session['campaign']
+    ).count() * Campaign.objects.get(pk=request.session['campaign']).tick_price1
+    total_sold_triples = Tickets.objects.filter(
+        tick_type=2,
+        camp_id_id=request.session['campaign']
+    ).count() * Campaign.objects.get(pk=request.session['campaign']).tick_price3 / 3
+    total_sold_tens = Tickets.objects.filter(
+        tick_type=3,
+        camp_id_id=request.session['campaign']
+    ).count() * Campaign.objects.get(pk=request.session['campaign']).tick_price10 / 10
+    total_raised = total_sold_singles + total_sold_triples + total_sold_tens
+
+
+    campaign_goal = Campaign.objects.get(pk=request.session['campaign']).fund_goal
+    therm_url = 'http://www.coolfundraisingideas.net/thermometer/thermometer.php?currency=dollar&goal=' + \
+        str(campaign_goal) + '&current=' + str(total_raised) + \
+        '&color=green&size=large'
     context = {
-        'seller_name': "Mary Smith",
-        'image_src': therm_url
+        'seller_name': seller.first_name,
+        'tickets_sold': tickets_sold,
+        'money_sold': money_sold_singles + money_sold_triples + money_sold_tens,
+        'campaign_goal': "{:,}".format(campaign_goal),
+        'image_src': therm_url,
     }
     return render(request, 'sales/welcome.html', context)

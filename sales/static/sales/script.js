@@ -10,9 +10,9 @@ function changeFunc($i, id) {
     if($i == 2){
     var div = document.getElementById("content"+id);
     var rest = id.slice(3);
-    div.innerHTML += '<fieldset><input name='+ 'ticket' + rest + '.1' + ' placeholder="Ticket Number" type="text" ><input name='+ 'ticket' + rest + '.2' + ' placeholder="Ticket Number" type="text" >';
+    div.innerHTML += '<input name='+ 'ticket' + rest + '.1' + ' placeholder="Ticket Number" type="number" max="99999" ><input name='+ 'ticket' + rest + '.2' + ' placeholder="Ticket Number" max="99999" type="number" >';
   } else if ($i == 1 || $i== 3) {
-    var div = document.getElementById("contentrow"+id);
+    var div = document.getElementById("content"+id);
     div.innerHTML = "";
   }
 }
