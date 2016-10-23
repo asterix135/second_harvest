@@ -4,7 +4,7 @@
   <div class="container">
     <form id="contact" action="" method="post">
       {% csrf_token %}
-      <h3>Step2: Amount of Sold Tickets</h3><br>
+      <h3>Step 3: Amount of Sold Tickets</h3><br>
       {% if multi_key_error %}
       <h5><span>{{ multi_key_error }}</span></h5>
       {% endif %}

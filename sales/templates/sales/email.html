@@ -4,9 +4,8 @@
 <div class="container">
     <form id="contact" action="" method="post">
         {% csrf_token %}
-        <h3>Step 2: Buyer Information Form</h3><br>
-        <h5><span>{{ customer_message }}</span></h5><br />
-        {{ buyer_form }}
+        <h3>Step 1: Please Enter Your Email Address</h3><br>
+        {{ email_form }}
         <button class="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
     </form>
 </div>

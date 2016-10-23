@@ -42,7 +42,6 @@ def logout_site(request):
 ##################
 def ticket_is_new(ticket_number):
     if Tickets.objects.filter(tick_id=ticket_number).exists():
-        print('\n\n\nOMG!!!!\n\n')
         return False
     else:
         return True
@@ -117,6 +116,22 @@ def ticket_info(request):
     return render(request, 'sales/ticket_info.html', context)
 
 
+def check_email(request):
+    if request.method == 'POST':
+        form = EmailCheckForm(request.POST)
+        if form.is_valid():
+            if Buyer.objects.filter(email=request.POST['email']).exists():
+                request.session['buyer'] = \
+                    Buyer.objects.get(email=request.POST['email']).id
+            else:
+                request.session['buyer'] = None
+                request.session['email'] = request.POST['email']
+        return HttpResponseRedirect(reverse('sales:client_info'))
+
+    context = {'email_form': EmailCheckForm}
+    return render(request, 'sales/email.html', context)
+
+
 def client_info(request):
     if request.method == 'POST':
         form = DonorInputForm(request.POST)
@@ -134,8 +149,20 @@ def client_info(request):
             buyer.save()
             request.session['buyer'] = buyer.id
         return HttpResponseRedirect(reverse('sales:ticket_info'))
+    if request.session['buyer'] is not None:
+        buyer_form = DonorInputForm(
+            instance=Buyer.objects.get(pk=request.session['buyer'])
+        )
+        customer_message = "Thank you for purchaing another ticket.\n " \
+                           "Please check your contact information below."
+    else:
+        buyer_form = DonorInputForm(
+            initial={'email': request.session['email']}
+        )
+        customer_message = "Please fill in your contact information."
     context = {
-        'buyer_form': DonorInputForm
+        'buyer_form': buyer_form,
+        'customer_message': customer_message,
     }
     return render(request, 'sales/client_info.html', context)
 
@@ -167,7 +194,7 @@ def welcome(request):
     #############
 
     if request.method == 'POST':
-        return HttpResponseRedirect(reverse('sales:client_info'))
+        return HttpResponseRedirect(reverse('sales:email'))
     seller = User.objects.get(pk=request.session['seller'])
     tickets_sold = Tickets.objects.filter(seller_id_id=request.session['seller']).count()
 
